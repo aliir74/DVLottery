@@ -46,15 +46,11 @@ jobs:
           username: ${{ vars.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Pull the latest image
             docker pull aliir74/dv-lottery-image-bot:${{ github.sha }}
-
             if [ ! -d "dv-lottery-image-bot" ]; then
                 mkdir dv-lottery-image-bot
             fi
             cd dv-lottery-image-bot
-
-            # Create or update environment file
             touch .env
             echo "${{ vars.ENVS }}" > .env
             echo "${{ secrets.ENVS }}" >> .env

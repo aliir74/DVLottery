@@ -1,10 +1,13 @@
 import io
 import logging
+import os
 
 import cv2
 import dlib
 import numpy as np
 from PIL import Image
+
+from consts import PROJECT_ROOT
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,7 +22,7 @@ def crop_image(image_path):
     # Load the face detector and shape predictor
     face_detector = dlib.get_frontal_face_detector()
     shape_predictor = dlib.shape_predictor(
-        "./../models/shape_predictor_68_face_landmarks.dat"
+        os.path.join(PROJECT_ROOT, "models", "shape_predictor_68_face_landmarks.dat")
     )
 
     # Read the image using OpenCV

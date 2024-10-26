@@ -14,6 +14,7 @@ from telegram.ext import (
 
 from consts import (
     ADMIN_ID,
+    PROJECT_ROOT,
     TELEGRAM_BOT_TOKEN,
     TELEGRAM_CHANNEL_USERNAME,
     CallbackData,
@@ -56,7 +57,7 @@ join_group_reply_markup = InlineKeyboardMarkup(
 def path_generator(extension: str, prefix: str = ""):
     i = 1
     while True:
-        yield os.path.join("./../images/", f"{prefix}{i}.{extension}")
+        yield os.path.join(PROJECT_ROOT, "images", f"{prefix}{i}.{extension}")
         i += 1
 
 
@@ -250,7 +251,9 @@ async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == "__main__":
-    persistence = PicklePersistence(filepath="./../database.pkl", update_interval=1)
+    persistence = PicklePersistence(
+        filepath=os.path.join(PROJECT_ROOT, "database.pkl"), update_interval=1
+    )
     application = (
         ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
     )
