@@ -1,11 +1,12 @@
-FROM python:3.11
+FROM python:3.11-slim
 
 WORKDIR /app
 COPY . .
 
+RUN apt-get update && apt-get -y install cron build-essential cmake libopenblas-dev liblapack-dev libopenblas-dev liblapack-dev
+
 RUN pip install -r requirements.txt
 
-RUN apt-get update && apt-get -y install cron
 
 COPY cleanup_images.sh /app/cleanup_images.sh
 RUN chmod +x /app/cleanup_images.sh
