@@ -51,7 +51,7 @@ jobs:
                 mkdir dv-lottery-image-bot
             fi
             cd dv-lottery-image-bot
-            [ ! -f "database.pkl" ] && touch "database.pkl"
+            [ ! -f "database.pkl" ] && python3 -c "import pickle; pickle.dump({}, open('database.pkl', 'wb'))"
             touch .env
             echo "${{ vars.ENVS }}" > .env
             echo "${{ secrets.ENVS }}" >> .env
