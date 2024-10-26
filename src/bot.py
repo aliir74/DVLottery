@@ -13,6 +13,7 @@ from telegram.ext import (
 )
 
 from consts import (
+    ADMIN_ID,
     TELEGRAM_BOT_TOKEN,
     TELEGRAM_CHANNEL_USERNAME,
     CallbackData,
@@ -80,6 +81,7 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             text=Messages.DELETED_IMAGE,
         )
+        context.bot_data.setdefault("deleted_error_count", 0) += 1
         context.user_data["last_message_id"] = None
         await start(update, context)
         return
@@ -91,6 +93,7 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         photo=edited_file_name,
     )
+    context.bot_data.setdefault("completed_count", 0) += 1
     os.remove(file_name)
     os.remove(edited_file_name)
     message = await context.bot.send_message(
@@ -102,6 +105,9 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.user_data.get("state") is None:
+        # first time
+        context.bot_data.setdefault("distinct_user_count", 0) += 1
     message = await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=Messages.START,
@@ -112,6 +118,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_message_id"],
         )
+    context.bot_data.setdefault("start_count", 0) += 1
+
     context.user_data["state"] = UserState.START_QUESTION
     context.user_data["last_message_id"] = message.message_id
 
@@ -125,14 +133,18 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=Messages.YES_CONVERT,
         )
         context.user_data["state"] = UserState.CONVERT_QUESTION
+        context.bot_data.setdefault("convert_count", 0) += 1
     elif query.data == CallbackData.NO_START_QUESTION:
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.BYE,
         )
         context.user_data["state"] = UserState.CONVERT_QUESTION
+        context.bot_data.setdefault("bye_count", 0) += 1
     elif query.data == CallbackData.JOINED:
+        context.bot_data.setdefault("joined_count", 0) += 1
         if not await is_user_in_group(update, context):
+            context.bot_data.setdefault("fake_joined_count", 0) += 1
             await context.bot.edit_message_text(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
@@ -143,6 +155,7 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         await send_photo(update, context)
     elif query.data == CallbackData.NOT_JOINED:
+        context.bot_data.setdefault("not_joined_count", 0) += 1
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.BYE,
@@ -152,6 +165,7 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.bot_data.setdefault("image_received_count", 0) += 1
     if context.user_data.get("state", UserState.INITIAL) != UserState.CONVERT_QUESTION:
         return
     download_message = await context.bot.send_message(
@@ -178,6 +192,7 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             text=Messages.NOT_WORKING_IMAGE,
         )
+        context.bot_data.setdefault("not_working_image_count", 0) += 1
         context.user_data["state"] = UserState.CONVERT_QUESTION
         context.user_data["last_message_id"] = message.message_id
         return
@@ -193,6 +208,7 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await is_user_in_group(update, context):
         await send_photo(update, context)
     else:
+        context.bot_data.setdefault("already_in_group_count", 0) += 1
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.JOIN_GROUP,
@@ -202,16 +218,35 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["last_message_id"] = message.message_id
 
 
+async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
+    message = await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Gathering data...",
+    )
+    await context.bot.send_chat_action(
+        chat_id=update.effective_chat.id,
+        action=ChatAction.TYPING,
+    )
+    report = ""
+    for key, value in context.bot_data.items():
+        report += f"{key.upper()}: {value}\n"
+    await message.edit_text(report)
+
+
 if __name__ == "__main__":
     persistence = PicklePersistence(filepath="pickle_data", update_interval=1)
     application = (
         ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
     )
 
+    admin_handler = CommandHandler("admin", admin_report)
     start_handler = CommandHandler("start", start)
     start_question_handler = CallbackQueryHandler(start_question)
     image_received_handler = MessageHandler(filters.ATTACHMENT, image_received)
 
+    application.add_handler(admin_handler)
     application.add_handler(start_handler)
     application.add_handler(start_question_handler)
     application.add_handler(image_received_handler)

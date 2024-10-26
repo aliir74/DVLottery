@@ -7,6 +7,7 @@ load_dotenv("./../.env")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_GROUP_URL = os.environ.get("TELEGRAM_GROUP_URL")
 TELEGRAM_CHANNEL_USERNAME = os.environ.get("TELEGRAM_CHANNEL_USERNAME")
+ADMIN_ID = os.environ.get("ADMIN_ID")
 
 
 class CallbackData:
