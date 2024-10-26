@@ -5,7 +5,7 @@ COPY . .
 
 RUN pip install --upgrade pip setuptools
 RUN pip install cmake==3.27.0
-RUN apt-get update && apt-get -y install cron build-essential cmake libopenblas-dev liblapack-dev libopenblas-dev liblapack-dev
+RUN apt-get update && apt-get -y install cron build-essential cmake libopenblas-dev liblapack-dev libopenblas-dev liblapack-dev ffmpeg libsm6 libxext6
 
 RUN pip install -r requirements.txt
 
