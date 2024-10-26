@@ -81,7 +81,9 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             text=Messages.DELETED_IMAGE,
         )
-        context.bot_data.setdefault("deleted_error_count", 0) += 1
+        context.bot_data["deleted_error_count"] = (
+            context.bot_data.get("deleted_error_count", 0) + 1
+        )
         context.user_data["last_message_id"] = None
         await start(update, context)
         return
@@ -93,7 +95,7 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         photo=edited_file_name,
     )
-    context.bot_data.setdefault("completed_count", 0) += 1
+    context.bot_data["completed_count"] = context.bot_data.get("completed_count", 0) + 1
     os.remove(file_name)
     os.remove(edited_file_name)
     message = await context.bot.send_message(
@@ -107,7 +109,9 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.user_data.get("state") is None:
         # first time
-        context.bot_data.setdefault("distinct_user_count", 0) += 1
+        context.bot_data["distinct_user_count"] = (
+            context.bot_data.get("distinct_user_count", 0) + 1
+        )
     message = await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=Messages.START,
@@ -118,7 +122,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_message_id"],
         )
-    context.bot_data.setdefault("start_count", 0) += 1
+    context.bot_data["start_count"] = context.bot_data.get("start_count", 0) + 1
 
     context.user_data["state"] = UserState.START_QUESTION
     context.user_data["last_message_id"] = message.message_id
@@ -133,18 +137,20 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=Messages.YES_CONVERT,
         )
         context.user_data["state"] = UserState.CONVERT_QUESTION
-        context.bot_data.setdefault("convert_count", 0) += 1
+        context.bot_data["convert_count"] = context.bot_data.get("convert_count", 0) + 1
     elif query.data == CallbackData.NO_START_QUESTION:
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.BYE,
         )
         context.user_data["state"] = UserState.CONVERT_QUESTION
-        context.bot_data.setdefault("bye_count", 0) += 1
+        context.bot_data["bye_count"] = context.bot_data.get("bye_count", 0) + 1
     elif query.data == CallbackData.JOINED:
-        context.bot_data.setdefault("joined_count", 0) += 1
+        context.bot_data["joined_count"] = context.bot_data.get("joined_count", 0) + 1
         if not await is_user_in_group(update, context):
-            context.bot_data.setdefault("fake_joined_count", 0) += 1
+            context.bot_data["fake_joined_count"] = (
+                context.bot_data.get("fake_joined_count", 0) + 1
+            )
             await context.bot.edit_message_text(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
@@ -155,7 +161,9 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         await send_photo(update, context)
     elif query.data == CallbackData.NOT_JOINED:
-        context.bot_data.setdefault("not_joined_count", 0) += 1
+        context.bot_data["not_joined_count"] = (
+            context.bot_data.get("not_joined_count", 0) + 1
+        )
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.BYE,
@@ -165,7 +173,9 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.bot_data.setdefault("image_received_count", 0) += 1
+    context.bot_data["image_received_count"] = (
+        context.bot_data.get("image_received_count", 0) + 1
+    )
     if context.user_data.get("state", UserState.INITIAL) != UserState.CONVERT_QUESTION:
         return
     download_message = await context.bot.send_message(
@@ -192,7 +202,9 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.effective_chat.id,
             text=Messages.NOT_WORKING_IMAGE,
         )
-        context.bot_data.setdefault("not_working_image_count", 0) += 1
+        context.bot_data["not_working_image_count"] = (
+            context.bot_data.get("not_working_image_count", 0) + 1
+        )
         context.user_data["state"] = UserState.CONVERT_QUESTION
         context.user_data["last_message_id"] = message.message_id
         return
@@ -208,7 +220,9 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await is_user_in_group(update, context):
         await send_photo(update, context)
     else:
-        context.bot_data.setdefault("already_in_group_count", 0) += 1
+        context.bot_data["already_in_group_count"] = (
+            context.bot_data.get("already_in_group_count", 0) + 1
+        )
         message = await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=Messages.JOIN_GROUP,
