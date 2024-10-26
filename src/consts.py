@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv("../.env")
+load_dotenv("./../.env")
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_GROUP_URL = os.environ.get("TELEGRAM_GROUP_URL")

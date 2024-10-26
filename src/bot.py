@@ -55,7 +55,7 @@ join_group_reply_markup = InlineKeyboardMarkup(
 def path_generator(extension: str, prefix: str = ""):
     i = 1
     while True:
-        yield os.path.join("../images/", f"{prefix}{i}.{extension}")
+        yield os.path.join("./../images/", f"{prefix}{i}.{extension}")
         i += 1
 
 

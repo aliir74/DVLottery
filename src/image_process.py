@@ -19,7 +19,7 @@ def crop_image(image_path):
     # Load the face detector and shape predictor
     face_detector = dlib.get_frontal_face_detector()
     shape_predictor = dlib.shape_predictor(
-        "../models/shape_predictor_68_face_landmarks.dat"
+        "./../models/shape_predictor_68_face_landmarks.dat"
     )
 
     # Read the image using OpenCV
