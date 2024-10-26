@@ -60,4 +60,4 @@ jobs:
             echo "${{ secrets.ENVS }}" >> .env
             docker stop dv-lottery-image-bot
             docker rm dv-lottery-image-bot
-            docker run -d --volume pickle_data:/app/pickle_data --volume images:/app/images --restart always --env-file .env --name dv-lottery-image-bot aliir74/dv-lottery-image-bot:${{ github.sha }}
+            docker run -d --volume ./database.pkl:/app/database.pkl --volume ./images:/app/images --restart always --env-file .env --name dv-lottery-image-bot aliir74/dv-lottery-image-bot:${{ github.sha }}
