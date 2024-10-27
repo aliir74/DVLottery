@@ -57,8 +57,8 @@ jobs:
             docker stop dv-lottery-image-bot
             docker rm dv-lottery-image-bot
             docker run -d \
-              -v database:/app/database \
-              -v images:/app/images \
+              -v ~/dv-lottery-image-bot/database:/app/database \
+              -v ~/dv-lottery-image-bot/images:/app/images \
               --restart always \
               --env-file .env \
               --name dv-lottery-image-bot \
