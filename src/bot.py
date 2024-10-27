@@ -253,7 +253,7 @@ async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == "__main__":
-    persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=1)
+    persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=60)
     application = (
         ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
     )
