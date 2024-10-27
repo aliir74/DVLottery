@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           push: true
-          tags: aliir74/dv-lottery-image-bot:${{ github.sha }}
+          tags: aliir74/dv-lottery-image-bot:latest
           file: ./Dockerfile
 
   deploy:
@@ -46,7 +46,7 @@ jobs:
           username: ${{ vars.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull aliir74/dv-lottery-image-bot:${{ github.sha }}
+            docker pull aliir74/dv-lottery-image-bot:latest
             if [ ! -d "dv-lottery-image-bot" ]; then
                 mkdir dv-lottery-image-bot
             fi
@@ -57,4 +57,4 @@ jobs:
             echo "${{ secrets.ENVS }}" >> .env
             docker stop dv-lottery-image-bot
             docker rm dv-lottery-image-bot
-            docker run -d --volume ./database.pkl:/app/database.pkl --volume ./images:/app/images --restart always --env-file .env --name dv-lottery-image-bot aliir74/dv-lottery-image-bot:${{ github.sha }}
+            docker run -d -v database.pkl:/app/database.pkl -v images:/app/images --restart always --env-file .env --name dv-lottery-image-bot aliir74/dv-lottery-image-bot:latest

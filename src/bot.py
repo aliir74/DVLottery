@@ -13,8 +13,8 @@ from telegram.ext import (
 )
 
 from consts import (
-    ADMIN_ID,
     PROJECT_ROOT,
+    TELEGRAM_ADMIN_ID,
     TELEGRAM_BOT_TOKEN,
     TELEGRAM_CHANNEL_USERNAME,
     CallbackData,
@@ -234,7 +234,8 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    print(update.effective_user.id, TELEGRAM_ADMIN_ID)
+    if update.effective_user.id != TELEGRAM_ADMIN_ID:
         return
     message = await context.bot.send_message(
         chat_id=update.effective_chat.id,
