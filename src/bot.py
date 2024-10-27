@@ -235,7 +235,6 @@ async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(update.effective_user.id, TELEGRAM_ADMIN_ID)
     if update.effective_user.id != TELEGRAM_ADMIN_ID:
         return
     message = await context.bot.send_message(
@@ -252,19 +251,26 @@ async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await message.edit_text(report)
 
 
+async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.bot_data["help_count"] = context.bot_data.get("help_count", 0) + 1
+    await update.message.reply_text(Messages.HELP, parse_mode="MarkdownV2")
+
+
 if __name__ == "__main__":
-    persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=60)
+    persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=5 * 60)
     application = (
         ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
     )
 
     admin_handler = CommandHandler("admin", admin_report)
     start_handler = CommandHandler("start", start)
+    help_handler = CommandHandler("help", help)
     start_question_handler = CallbackQueryHandler(start_question)
     image_received_handler = MessageHandler(filters.ATTACHMENT, image_received)
 
     application.add_handler(admin_handler)
     application.add_handler(start_handler)
+    application.add_handler(help_handler)
     application.add_handler(start_question_handler)
     application.add_handler(image_received_handler)
 
