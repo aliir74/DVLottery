@@ -13,6 +13,7 @@ from telegram.ext import (
 )
 
 from consts import (
+    DATABASE_FILE,
     PROJECT_ROOT,
     TELEGRAM_ADMIN_ID,
     TELEGRAM_BOT_TOKEN,
@@ -252,9 +253,7 @@ async def admin_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == "__main__":
-    persistence = PicklePersistence(
-        filepath=os.path.join(PROJECT_ROOT, "database.pkl"), update_interval=1
-    )
+    persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=1)
     application = (
         ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
     )

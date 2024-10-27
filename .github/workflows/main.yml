@@ -57,4 +57,10 @@ jobs:
             echo "${{ secrets.ENVS }}" >> .env
             docker stop dv-lottery-image-bot
             docker rm dv-lottery-image-bot
-            docker run -d -v database.pkl:/app/database.pkl -v images:/app/images --restart always --env-file .env --name dv-lottery-image-bot aliir74/dv-lottery-image-bot:latest
+            docker run -d \
+              -v database:/app/database \
+              -v images:/app/images \
+              --restart always \
+              --env-file .env \
+              --name dv-lottery-image-bot \
+              aliir74/dv-lottery-image-bot:latest
