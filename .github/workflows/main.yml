@@ -29,6 +29,8 @@ jobs:
           push: true
           tags: aliir74/dv-lottery-image-bot:latest
           file: ./Dockerfile
+          cache-from: type=registry,ref=aliir74/dv-lottery-image-bot:latest
+          cache-to: type=inline
 
   deploy:
     permissions:
@@ -46,6 +48,7 @@ jobs:
           username: ${{ vars.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            docker system prune -f --all
             docker pull aliir74/dv-lottery-image-bot:latest
             if [ ! -d "dv-lottery-image-bot" ]; then
                 mkdir dv-lottery-image-bot
