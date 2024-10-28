@@ -29,6 +29,7 @@ class CallbackData:
     NOT_JOINED = "not_joined"
 
 
+# fmt: off
 class Messages:
     START = "🤩 سلام! خوش اومدی! می‌خوای عکست رو تبدیل به عکس لاتاری کنم؟"
     YES = "آره ✅"
@@ -77,6 +78,7 @@ class Messages:
         + "\n\n"
         + "💯[لینک آموزش لاتاری](https://youtu.be/HpcM-neM0aU)💯"
     )
+# fmt: on
 
 
 class UserState:
