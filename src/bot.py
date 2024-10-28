@@ -18,6 +18,7 @@ from consts import (
     TELEGRAM_ADMIN_ID,
     TELEGRAM_BOT_TOKEN,
     TELEGRAM_CHANNEL_USERNAME,
+    VIDEO_PUBLISHED,
     CallbackData,
     Messages,
     UserState,
@@ -89,7 +90,7 @@ async def send_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["last_message_id"] = None
         await start(update, context)
         return
-    final_message = Messages.INVITE_TO_YOUTUBE_VIDEO + "\n\n"
+    final_message = Messages.INVITE_TO_YOUTUBE_VIDEO + "\n\n" if VIDEO_PUBLISHED else ""
     final_message += Messages.SUCCESS if good_image else Messages.NOT_GOOD_IMAGE
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -117,11 +118,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.bot_data["distinct_user_count"] = (
             context.bot_data.get("distinct_user_count", 0) + 1
         )
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=Messages.INVITE_TO_YOUTUBE_VIDEO,
-        parse_mode="MarkdownV2",
-    )
+    if VIDEO_PUBLISHED:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=Messages.INVITE_TO_YOUTUBE_VIDEO,
+            parse_mode="MarkdownV2",
+        )
     message = await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=Messages.START,

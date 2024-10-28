@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 
@@ -16,6 +17,7 @@ TELEGRAM_GROUP_URL = os.environ.get("TELEGRAM_GROUP_URL")
 TELEGRAM_CHANNEL_USERNAME = os.environ.get("TELEGRAM_CHANNEL_USERNAME")
 TELEGRAM_ADMIN_ID = int(os.environ.get("TELEGRAM_ADMIN_ID"))
 DATABASE_FILE = os.path.join(PROJECT_ROOT, "database", "pickle_data")
+VIDEO_PUBLISHED = datetime.now() > datetime(2024, 10, 28, 2, 0, 0)
 
 
 class CallbackData:
@@ -36,17 +38,11 @@ class Messages:
     NOT_WORKING_IMAGE = (
         "😢 عکس به درستی کار نمی‌کنه و احتمالا مناسب لاتاری نیست، لطفا یک عکس دیگه بفرست"
     )
-    HELP_INVITE = (
-        "❗️برای دیدن شرایط عکس لاتاری روی /help بزن❗️"
-    )
+    HELP_INVITE = "❗️برای دیدن شرایط عکس لاتاری روی /help بزن❗️"
     NOT_GOOD_IMAGE = (
-        "💢 نتیجه ممکنه مناسب لاتاری نباشه و بهتره چکش کنی 💢\n"
-        + HELP_INVITE
+        "💢 نتیجه ممکنه مناسب لاتاری نباشه و بهتره چکش کنی 💢\n" + HELP_INVITE
     )
-    SUCCESS = (
-        "🎊 اینم عکس لاتاری‌ ت🎊\n"
-        + HELP_INVITE
-    )
+    SUCCESS = "🎊 اینم عکس لاتاری‌ ت🎊\n" + HELP_INVITE
     RECEIVING_IMAGE = "⌛ یه لحظه وایسا..."
     JOIN_GROUP = (
         "عکست آماده‌ست و فقط باید عضو این کانال تلگرامی بشی تا برات رایگان بفرستم\n"
@@ -77,7 +73,7 @@ class Messages:
         + f"{REQUIREMENTS}"
     )
     INVITE_TO_YOUTUBE_VIDEO = (
-        "🎥😍🇺🇸 اینجا برات توضیحادم که چه جوری فرم رو پر کنی، هم موبایل هم کامپیوتر"
+        "🎥😍🇺🇸 اینجا برات توضیح دادم که چه جوری فرم لاتاری رو پر کنی، هم موبایل هم کامپیوتر"
         + "\n\n"
         + "💯[لینک آموزش لاتاری](https://youtu.be/HpcM-neM0aU)💯"
     )
