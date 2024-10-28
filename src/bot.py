@@ -266,10 +266,21 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(Messages.HELP, parse_mode="MarkdownV2")
 
 
+async def post_init(application: ApplicationBuilder):
+    await application.bot.send_message(
+        chat_id=TELEGRAM_ADMIN_ID,
+        text="✅ Bot deployed successfully",
+    )
+
+
 if __name__ == "__main__":
     persistence = PicklePersistence(filepath=DATABASE_FILE, update_interval=5 * 60)
     application = (
-        ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).persistence(persistence).build()
+        ApplicationBuilder()
+        .token(TELEGRAM_BOT_TOKEN)
+        .persistence(persistence)
+        .post_init(post_init)
+        .build()
     )
 
     admin_handler = CommandHandler("admin", admin_report)
