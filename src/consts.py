@@ -17,7 +17,7 @@ TELEGRAM_GROUP_URL = os.environ.get("TELEGRAM_GROUP_URL")
 TELEGRAM_CHANNEL_USERNAME = os.environ.get("TELEGRAM_CHANNEL_USERNAME")
 TELEGRAM_ADMIN_ID = int(os.environ.get("TELEGRAM_ADMIN_ID"))
 DATABASE_FILE = os.path.join(PROJECT_ROOT, "database", "pickle_data")
-VIDEO_PUBLISHED = datetime.now() > datetime(2024, 10, 28, 2, 0, 0)
+VIDEO_PUBLISHED = datetime.now() > datetime(2024, 10, 28, 21, 0, 0)
 
 
 class CallbackData:

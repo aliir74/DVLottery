@@ -3,6 +3,7 @@ import os
 from telegram import ChatMember, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ChatAction
 from telegram.ext import (
+    Application,
     ApplicationBuilder,
     CallbackQueryHandler,
     CommandHandler,
@@ -181,7 +182,7 @@ async def start_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=Messages.BYE,
         )
     await query.delete_message()
-    context.user_data["last_message_id"] = message.message_id
+    context.user_data["last_message_id"] = message and message.message_id
 
 
 async def image_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -266,7 +267,7 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(Messages.HELP, parse_mode="MarkdownV2")
 
 
-async def post_init(application: ApplicationBuilder):
+async def post_init(application: Application):
     await application.bot.send_message(
         chat_id=TELEGRAM_ADMIN_ID,
         text="✅ Bot deployed successfully",
